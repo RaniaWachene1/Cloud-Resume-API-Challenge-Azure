@@ -1,0 +1,11 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "CosmosDB_URL": "<YOUR_COSMOS_DB_ENDPOINT>",
+    "CosmosDB_Database": "<YOUR_COSMOSDB_DATABASE>",
+    "CosmosDB_Container": "<YOUR_COSMOSDB_CONTAINER>"
+  }
+}
