@@ -1,4 +1,4 @@
-name: Build and deploy Python project to Azure Function App
+name: Build and deploy Python project to Azure Function App - 
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python version
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -30,12 +30,14 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # Optional: Add step to run tests here
+
       - name: Zip artifact for deployment
         run: |
           zip -r release.zip ./* -x venv/\*
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         with:
           name: python-app
           path: release.zip
@@ -43,15 +45,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-function.outputs.webapp-url }}
+    permissions:
+      id-token: write # This is required for requesting the JWT
 
     steps:
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: Download artifact from build job
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v2
         with:
           name: python-app
 
