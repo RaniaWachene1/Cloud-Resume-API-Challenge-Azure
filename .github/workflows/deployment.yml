@@ -1,5 +1,4 @@
-name: Deploy Python Azure Function App
-
+name: Build and deploy Python project to Azure Function App 
 on:
   push:
     branches:
@@ -7,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
   PYTHON_VERSION: '3.10'
 
 jobs:
@@ -28,9 +27,7 @@ jobs:
           source venv/bin/activate
 
       - name: Install dependencies
-        run: |
-          source venv/bin/activate
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
       # Optional: Add step to run tests here
 
@@ -39,7 +36,7 @@ jobs:
           zip -r release.zip ./* -x venv/\*
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: python-app
           path: release.zip
@@ -55,17 +52,12 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v2
         with:
           name: python-app
 
       - name: Unzip artifact for deployment
         run: unzip -o release.zip
-
-      - name: Debug secrets
-        run: |
-          echo "AZURE_FUNCTIONAPP_NAME: ${{ secrets.AZURE_FUNCTIONAPP_NAME }}"
-          echo "AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}"
 
       - name: Deploy to Azure Functions
         uses: Azure/functions-action@v1
